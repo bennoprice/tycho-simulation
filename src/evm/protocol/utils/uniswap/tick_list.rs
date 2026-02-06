@@ -42,7 +42,7 @@ pub(crate) enum TickListErrorKind {
 }
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
-pub(crate) struct TickList {
+pub struct TickList {
     tick_spacing: u16,
     ticks: Vec<TickInfo>,
 }

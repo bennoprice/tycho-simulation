@@ -50,11 +50,11 @@ const MAX_TICKS_CROSSED: u64 = (MAX_SWAP_GAS - SWAP_BASE_GAS) / GAS_PER_TICK;
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub struct UniswapV3State {
-    liquidity: u128,
-    sqrt_price: U256,
-    fee: FeeAmount,
-    tick: i32,
-    ticks: TickList,
+    pub liquidity: u128,
+    pub qrt_price: U256,
+    pub fee: FeeAmount,
+    pub tick: i32,
+    pub ticks: TickList,
 }
 
 impl UniswapV3State {

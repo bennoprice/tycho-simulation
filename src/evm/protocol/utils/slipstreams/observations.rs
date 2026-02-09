@@ -60,7 +60,7 @@ impl Observation {
 }
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
-pub struct Observations {
+pub(crate) struct Observations {
     observations: Vec<Observation>,
 }
 

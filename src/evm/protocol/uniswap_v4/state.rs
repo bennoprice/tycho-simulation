@@ -62,12 +62,12 @@ const MAX_TICKS_CROSSED: u64 = (MAX_SWAP_GAS - SWAP_BASE_GAS) / GAS_PER_TICK;
 
 #[derive(Clone)]
 pub struct UniswapV4State {
-    liquidity: u128,
-    sqrt_price: U256,
-    fees: UniswapV4Fees,
-    tick: i32,
-    ticks: TickList,
-    tick_spacing: i32,
+    pub liquidity: u128,
+    pub sqrt_price: U256,
+    pub fees: UniswapV4Fees,
+    pub tick: i32,
+    pub ticks: TickList,
+    pub tick_spacing: i32,
     pub hook: Option<Box<dyn HookHandler>>,
 }
 

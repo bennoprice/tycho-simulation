@@ -40,18 +40,18 @@ use crate::evm::protocol::{
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub struct AerodromeSlipstreamsState {
-    id: String,
-    block_timestamp: u64,
-    liquidity: u128,
-    sqrt_price: U256,
-    observation_index: u16,
-    observation_cardinality: u16,
-    default_fee: u32,
-    tick_spacing: i32,
-    tick: i32,
-    ticks: TickList,
-    observations: Observations,
-    dfc: DynamicFeeConfig,
+    pub id: String,
+    pub block_timestamp: u64,
+    pub liquidity: u128,
+    pub sqrt_price: U256,
+    pub observation_index: u16,
+    pub observation_cardinality: u16,
+    pub default_fee: u32,
+    pub tick_spacing: i32,
+    pub tick: i32,
+    pub ticks: TickList,
+    pub observations: Observations,
+    pub dfc: DynamicFeeConfig,
 }
 
 impl AerodromeSlipstreamsState {

@@ -1,3 +1,24 @@
+## [0.245.0](https://github.com/propeller-heads/tycho-simulation/compare/0.244.0...0.245.0) (2026-02-24)
+
+
+### Features
+
+* remove lido ([b9a5793](https://github.com/propeller-heads/tycho-simulation/commit/b9a5793c208a20eb31caefab01df1412707f8790))
+
+## [0.244.0](https://github.com/propeller-heads/tycho-simulation/compare/0.243.0...0.244.0) (2026-02-23)
+
+
+### Features
+
+* **evm:** wire query_pool_swap for remaining EVM protocols ([a129ced](https://github.com/propeller-heads/tycho-simulation/commit/a129ced3d510281600a193852aa53bd0bb373c17))
+
+## [0.243.0](https://github.com/propeller-heads/tycho-simulation/compare/0.242.0...0.243.0) (2026-02-20)
+
+
+### Features
+
+* remove rocketpool from the integration test setup ([18265ef](https://github.com/propeller-heads/tycho-simulation/commit/18265ef43a70b3e59e00a46e98cb1162ccd0820f))
+
 ## [0.242.0](https://github.com/propeller-heads/tycho-simulation/compare/0.241.2...0.242.0) (2026-02-19)
 
 

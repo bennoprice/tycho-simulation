@@ -1,3 +1,5 @@
+use std::sync::Arc;
+
 use alloy::primitives::U256;
 use serde::{Deserialize, Serialize};
 use tycho_common::simulation::errors::SimulationError;
@@ -61,12 +63,12 @@ impl Observation {
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Observations {
-    observations: Vec<Observation>,
+    observations: Arc<Vec<Observation>>,
 }
 
 impl Observations {
     pub fn new(observations: Vec<Observation>) -> Self {
-        Self { observations }
+        Self { observations: Arc::new(observations) }
     }
 
     fn observation_index_err(&self, idx: usize, index: u16, cardinality: u16) -> SimulationError {
@@ -81,35 +83,34 @@ impl Observations {
 
     pub fn upsert_observation(&mut self, index: i32, bytes: &[u8]) -> Result<(), SimulationError> {
         let idx = index as usize;
+        let observations = Arc::make_mut(&mut self.observations);
         if bytes.is_empty() {
-            return if idx < self.observations.len() {
-                self.observations.remove(idx);
+            return if idx < observations.len() {
+                observations.remove(idx);
                 Ok(())
             } else {
                 Err(SimulationError::FatalError(format!(
                     "Cannot delete: index {} out of bounds (len={})",
                     index,
-                    self.observations.len()
+                    observations.len()
                 )))
             };
         }
         let mut obs = Observation::from_attribute(index, bytes)?;
         obs.index = index;
-        if idx < self.observations.len() {
-            self.observations[idx] = obs;
+        if idx < observations.len() {
+            observations[idx] = obs;
             return Ok(());
         }
-        if idx >= self.observations.capacity() {
-            self.observations
-                .reserve(idx - self.observations.len() + 1);
+        if idx >= observations.capacity() {
+            observations.reserve(idx - observations.len() + 1);
         }
 
-        while self.observations.len() < idx {
-            self.observations
-                .push(Observation::default());
+        while observations.len() < idx {
+            observations.push(Observation::default());
         }
 
-        self.observations.push(obs);
+        observations.push(obs);
         Ok(())
     }
 

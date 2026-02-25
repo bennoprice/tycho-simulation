@@ -1,4 +1,4 @@
-use std::cmp;
+use std::{cmp, sync::Arc};
 
 use alloy::primitives::U256;
 use serde::{Deserialize, Serialize};
@@ -44,12 +44,12 @@ pub(crate) enum TickListErrorKind {
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub struct TickList {
     tick_spacing: u16,
-    ticks: Vec<TickInfo>,
+    ticks: Arc<Vec<TickInfo>>,
 }
 
 impl TickList {
     pub(crate) fn from(spacing: u16, ticks: Vec<TickInfo>) -> Result<Self, SimulationError> {
-        let tick_list = TickList { tick_spacing: spacing, ticks };
+        let tick_list = TickList { tick_spacing: spacing, ticks: Arc::new(ticks) };
         tick_list.valid_ticks()?;
         Ok(tick_list)
     }
@@ -63,7 +63,7 @@ impl TickList {
             return Err(SimulationError::FatalError("Tick spacing is 0".to_string()));
         }
 
-        for t in &self.ticks {
+        for t in self.ticks.iter() {
             if t.index % self.tick_spacing as i32 != 0 {
                 return Err(SimulationError::FatalError(format!(
                     "Tick index {} not aligned with tick spacing {}",
@@ -100,20 +100,17 @@ impl TickList {
 
     #[allow(dead_code)]
     fn upsert_tick(&mut self, tick: i32, delta: i128) -> Result<(), SimulationError> {
-        match self
-            .ticks
-            .binary_search_by(|t| t.index.cmp(&tick))
-        {
+        let ticks = Arc::make_mut(&mut self.ticks);
+        match ticks.binary_search_by(|t| t.index.cmp(&tick)) {
             Ok(existing_idx) => {
-                let tick = &mut self.ticks[existing_idx];
+                let tick = &mut ticks[existing_idx];
                 tick.net_liquidity += delta;
                 if tick.net_liquidity == 0 {
-                    self.ticks.remove(existing_idx);
+                    ticks.remove(existing_idx);
                 }
             }
             Err(insert_idx) => {
-                self.ticks
-                    .insert(insert_idx, TickInfo::new(tick, delta)?);
+                ticks.insert(insert_idx, TickInfo::new(tick, delta)?);
             }
         }
         Ok(())
@@ -124,20 +121,17 @@ impl TickList {
         tick: i32,
         liquidity: i128,
     ) -> Result<(), SimulationError> {
-        match self
-            .ticks
-            .binary_search_by(|t| t.index.cmp(&tick))
-        {
+        let ticks = Arc::make_mut(&mut self.ticks);
+        match ticks.binary_search_by(|t| t.index.cmp(&tick)) {
             Ok(existing_idx) => {
-                let tick = &mut self.ticks[existing_idx];
+                let tick = &mut ticks[existing_idx];
                 tick.net_liquidity = liquidity;
                 if tick.net_liquidity == 0 {
-                    self.ticks.remove(existing_idx);
+                    ticks.remove(existing_idx);
                 }
             }
             Err(insert_idx) => {
-                self.ticks
-                    .insert(insert_idx, TickInfo::new(tick, liquidity)?);
+                ticks.insert(insert_idx, TickInfo::new(tick, liquidity)?);
             }
         }
         Ok(())
@@ -180,7 +174,7 @@ impl TickList {
         }
 
         // Check if any ticks have non-zero net liquidity (are initialized)
-        for tick_info in &self.ticks {
+        for tick_info in self.ticks.iter() {
             if tick_info.net_liquidity != 0 {
                 return true;
             }

@@ -48,7 +48,7 @@ pub struct TickList {
 }
 
 impl TickList {
-    pub(crate) fn from(spacing: u16, ticks: Vec<TickInfo>) -> Result<Self, SimulationError> {
+    pub fn from(spacing: u16, ticks: Vec<TickInfo>) -> Result<Self, SimulationError> {
         let tick_list = TickList { tick_spacing: spacing, ticks: Arc::new(ticks) };
         tick_list.valid_ticks()?;
         Ok(tick_list)

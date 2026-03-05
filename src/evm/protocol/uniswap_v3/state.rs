@@ -78,7 +78,7 @@ impl UniswapV3State {
         Ok(UniswapV3State { liquidity, sqrt_price, fee, tick, ticks: tick_list })
     }
 
-    fn get_spacing(fee: FeeAmount) -> u16 {
+    pub fn get_spacing(fee: FeeAmount) -> u16 {
         match fee {
             FeeAmount::Lowest => 1,
             FeeAmount::Lowest2 => 2,

@@ -17,7 +17,7 @@ use tycho_simulation::{
             aerodrome_slipstreams::state::AerodromeSlipstreamsState,
             cowamm::state::CowAMMState,
             ekubo::state::EkuboState,
-            ekubo_v3::state::EkuboV3State,
+            ekubo_v3::{self, state::EkuboV3State},
             erc4626::state::ERC4626State,
             filters::{balancer_v2_pool_filter, erc4626_filter, fluid_v1_paused_pools_filter},
             fluid::FluidV1,
@@ -41,6 +41,7 @@ pub struct ProtocolStreamProcessor {
     tycho_url: String,
     tycho_api_key: String,
     tvl_threshold: f64,
+    tvl_buffer_ratio: f64,
     protocols: Option<Vec<String>>,
 }
 
@@ -50,9 +51,10 @@ impl ProtocolStreamProcessor {
         tycho_url: String,
         tycho_api_key: String,
         tvl_threshold: f64,
+        tvl_buffer_ratio: f64,
         protocols: Option<Vec<String>>,
     ) -> miette::Result<Self> {
-        Ok(Self { chain, tycho_url, tycho_api_key, tvl_threshold, protocols })
+        Ok(Self { chain, tycho_url, tycho_api_key, tvl_threshold, tvl_buffer_ratio, protocols })
     }
 
     pub async fn run_stream(
@@ -120,7 +122,10 @@ impl ProtocolStreamProcessor {
         all_tokens: &HashMap<Bytes, Token>,
     ) -> miette::Result<impl Stream<Item = Result<Update, StreamDecodeError>>> {
         let mut protocol_stream = ProtocolStreamBuilder::new(&self.tycho_url, self.chain);
-        let tvl_filter = ComponentFilter::with_tvl_range(self.tvl_threshold, self.tvl_threshold);
+        let tvl_filter = ComponentFilter::with_tvl_range(
+            self.tvl_threshold / self.tvl_buffer_ratio,
+            self.tvl_threshold,
+        );
 
         let protocols_to_enable = match &self.protocols {
             Some(protocols) => protocols.clone(),
@@ -228,7 +233,11 @@ impl ProtocolStreamProcessor {
                 stream = stream.exchange::<EkuboState>("ekubo_v2", tvl_filter.clone(), None);
             }
             "ekubo_v3" => {
-                stream = stream.exchange::<EkuboV3State>("ekubo_v3", tvl_filter.clone(), None);
+                stream = stream.exchange::<EkuboV3State>(
+                    "ekubo_v3",
+                    tvl_filter.clone(),
+                    Some(ekubo_v3::filter_fn),
+                );
             }
             "vm:curve" => {
                 stream = stream.exchange::<EVMPoolState<PreCachedDB>>(

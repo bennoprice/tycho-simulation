@@ -1,8 +1,10 @@
-pub mod base;
+pub mod boosted_fees;
+pub mod concentrated;
 pub mod full_range;
 pub mod mev_capture;
 pub mod oracle;
 pub mod stableswap;
+mod timed;
 pub mod twamm;
 
 use std::collections::{HashMap, HashSet};
@@ -37,7 +39,7 @@ pub trait EkuboPool {
         &mut self,
         updated_attributes: HashMap<String, Bytes>,
         deleted_attributes: HashSet<String>,
-    ) -> Result<(), TransitionError<String>>;
+    ) -> Result<(), TransitionError>;
 
     fn quote(
         &self,

@@ -42,7 +42,7 @@ use tycho_simulation::{
         engine_db::tycho_db::PreCachedDB,
         protocol::{
             ekubo::state::EkuboState,
-            ekubo_v3::state::EkuboV3State,
+            ekubo_v3::{self, state::EkuboV3State},
             filters::{balancer_v2_pool_filter, curve_pool_filter},
             pancakeswap_v2::state::PancakeswapV2State,
             u256_num::biguint_to_u256,
@@ -56,7 +56,7 @@ use tycho_simulation::{
     protocol::models::{ProtocolComponent, Update},
     tycho_client::feed::component_tracker::ComponentFilter,
     tycho_common::models::Chain,
-    utils::{get_default_url, load_all_tokens},
+    utils::{get_default_url, load_all_tokens, load_blocklist},
 };
 
 #[derive(Parser)]
@@ -72,6 +72,9 @@ struct Cli {
     tvl_threshold: f64,
     #[arg(long, default_value = "ethereum")]
     chain: Chain,
+    /// Path to blocklist TOML config file
+    #[arg(long)]
+    blocklist_file: Option<std::path::PathBuf>,
 }
 
 impl Cli {
@@ -188,7 +191,7 @@ async fn main() {
                 // .exchange::<UniswapV4State>("uniswap_v4_hooks", tvl_filter.clone(),
                 // Some(uniswap_v4_angstrom_hook_pool_filter))
                 .exchange::<EkuboState>("ekubo_v2", tvl_filter.clone(), None)
-                .exchange::<EkuboV3State>("ekubo_v3", tvl_filter.clone(), None)
+                .exchange::<EkuboV3State>("ekubo_v3", tvl_filter.clone(), Some(ekubo_v3::filter_fn))
                 .exchange::<EVMPoolState<PreCachedDB>>(
                     "vm:curve",
                     tvl_filter.clone(),
@@ -212,6 +215,10 @@ async fn main() {
         }
         _ => {}
     }
+
+    let blocklist =
+        load_blocklist(cli.blocklist_file.as_deref()).expect("Failed to load blocklist");
+    protocol_stream = protocol_stream.blocklist_components(blocklist);
 
     let mut protocol_stream = protocol_stream
         .auth_key(Some(tycho_api_key.clone()))

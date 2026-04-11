@@ -4,7 +4,7 @@ version = 4
 
 [[package]]
 name = "_tycho_simulation_py"
-version = "0.248.0"
+version = "0.255.0"
 dependencies = [
  "alloy",
  "num-bigint",
@@ -2771,6 +2771,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "77c90badedccf4105eca100756a0b1289e191f6fcbdadd3cee1d2f614f97da8f"
 
 [[package]]
+name = "dotenvy"
+version = "0.15.7"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1aaf95b3e5c8f23aa320147307562d361db0ae0d51242340f558153b4eb2439b"
+
+[[package]]
 name = "downcast"
 version = "0.11.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2826,9 +2832,9 @@ dependencies = [
 
 [[package]]
 name = "ekubo_sdk"
-version = "2.1.1"
+version = "3.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a52db0a7f5000a0eba52bcfb813462f3e2823bbc90d59c6855c928d10fcfe29d"
+checksum = "38c6060c1b24be171c1cf100bc2cd16bc8b16ebc29c7ef786d5fb9519e34dff5"
 dependencies = [
  "alloy-primitives 0.6.4",
  "alloy-primitives 1.5.0",
@@ -3384,6 +3390,8 @@ version = "0.16.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "5419bdc4f6a9207fbeba6d11b604d481addf78ecd10c11ad51e76c2f6482748d"
 dependencies = [
+ "allocator-api2",
+ "equivalent",
  "foldhash 0.2.0",
  "serde",
 ]
@@ -4188,11 +4196,11 @@ dependencies = [
 
 [[package]]
 name = "lru"
-version = "0.16.1"
+version = "0.16.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "bfe949189f46fabb938b3a9a0be30fdd93fd8a09260da863399a8cf3db756ec8"
+checksum = "a1dc47f592c06f33f8e3aea9591776ec7c9f9e4124778ff8a3c3b87159f7e593"
 dependencies = [
- "hashbrown 0.15.5",
+ "hashbrown 0.16.0",
 ]
 
 [[package]]
@@ -4956,7 +4964,7 @@ version = "3.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "219cb19e96be00ab2e37d6e299658a0cfa83e52429179969b0f0121b4ac46983"
 dependencies = [
- "toml_edit",
+ "toml_edit 0.23.6",
 ]
 
 [[package]]
@@ -5956,9 +5964,9 @@ dependencies = [
 
 [[package]]
 name = "ruint"
-version = "1.17.0"
+version = "1.17.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a68df0380e5c9d20ce49534f292a36a7514ae21350726efe1865bdb1fa91d278"
+checksum = "c141e807189ad38a07276942c6623032d3753c8859c146104ac2e4d68865945a"
 dependencies = [
  "alloy-rlp",
  "ark-ff 0.3.0",
@@ -6360,6 +6368,15 @@ dependencies = [
  "ryu",
  "serde",
  "serde_core",
+]
+
+[[package]]
+name = "serde_spanned"
+version = "0.6.9"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "bf41e0cfaf7226dca15e8197172c295a782857fcb97fad1808a166870dee75a3"
+dependencies = [
+ "serde",
 ]
 
 [[package]]
@@ -7089,6 +7106,27 @@ dependencies = [
 ]
 
 [[package]]
+name = "toml"
+version = "0.8.23"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "dc1beb996b9d83529a9e75c17a1686767d148d70663143c7854d8b4a09ced362"
+dependencies = [
+ "serde",
+ "serde_spanned",
+ "toml_datetime 0.6.11",
+ "toml_edit 0.22.27",
+]
+
+[[package]]
+name = "toml_datetime"
+version = "0.6.11"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "22cddaf88f4fbc13c51aebbf5f8eceb5c7c5a9da2ac40a13519eb5b0a0e8f11c"
+dependencies = [
+ "serde",
+]
+
+[[package]]
 name = "toml_datetime"
 version = "0.7.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -7099,12 +7137,26 @@ dependencies = [
 
 [[package]]
 name = "toml_edit"
+version = "0.22.27"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "41fe8c660ae4257887cf66394862d21dbca4a6ddd26f04a3560410406a2f819a"
+dependencies = [
+ "indexmap 2.11.4",
+ "serde",
+ "serde_spanned",
+ "toml_datetime 0.6.11",
+ "toml_write",
+ "winnow",
+]
+
+[[package]]
+name = "toml_edit"
 version = "0.23.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f3effe7c0e86fdff4f69cdd2ccc1b96f933e24811c5441d44904e8683e27184b"
 dependencies = [
  "indexmap 2.11.4",
- "toml_datetime",
+ "toml_datetime 0.7.2",
  "toml_parser",
  "winnow",
 ]
@@ -7117,6 +7169,12 @@ checksum = "4cf893c33be71572e0e9aa6dd15e6677937abd686b066eac3f8cd3531688a627"
 dependencies = [
  "winnow",
 ]
+
+[[package]]
+name = "toml_write"
+version = "0.1.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5d99f8c9a7727884afe522e9bd5edbfc91a3312b36a77b5fb8926e4c31a41801"
 
 [[package]]
 name = "tonic"
@@ -7344,11 +7402,10 @@ dependencies = [
 
 [[package]]
 name = "tycho-client"
-version = "0.143.0"
+version = "0.153.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "98701bab59c206feb7653d9fef2695391df037d7dbd16c6f8ce1fd6c75348e92"
+checksum = "93ba71c393d7236d79055c72c0d6101822a0a64487ede90cb9b023ebaaa05af3"
 dependencies = [
- "anyhow",
  "async-trait",
  "backoff",
  "chrono",
@@ -7356,7 +7413,7 @@ dependencies = [
  "futures 0.3.31",
  "hex",
  "hyper 0.14.32",
- "lru 0.12.5",
+ "lru 0.16.3",
  "reqwest",
  "serde",
  "serde_json",
@@ -7364,6 +7421,7 @@ dependencies = [
  "time",
  "tokio",
  "tokio-tungstenite 0.20.1",
+ "toml",
  "tracing",
  "tracing-appender",
  "tracing-subscriber 0.3.20",
@@ -7374,9 +7432,9 @@ dependencies = [
 
 [[package]]
 name = "tycho-common"
-version = "0.143.0"
+version = "0.153.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7948e4b81ea62272f8667d416f9a2dcac1a91f5c340f78812842528867b8963e"
+checksum = "11988023320d8623bd339d4239297fbd0a42e0307d9c46a1fd9f6afbf4b7b6c0"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -7384,6 +7442,7 @@ dependencies = [
  "chrono",
  "deepsize",
  "hex",
+ "itertools 0.10.5",
  "num-bigint",
  "rand 0.8.5",
  "serde",
@@ -7400,9 +7459,9 @@ dependencies = [
 
 [[package]]
 name = "tycho-ethereum"
-version = "0.143.0"
+version = "0.153.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3f7606590076f3e3865c2bb556ef9c093e8b00ae2ac9db5ce32f848f63ec2b2b"
+checksum = "a1bbf96296aeb6b6739c169be162a5abb2a9f6fc78fe45f6f9b3b0779a8b6092"
 dependencies = [
  "alloy",
  "async-trait",
@@ -7410,7 +7469,6 @@ dependencies = [
  "chrono",
  "futures 0.3.31",
  "num-bigint",
- "rand 0.8.5",
  "serde",
  "serde_json",
  "serde_with",
@@ -7423,9 +7481,9 @@ dependencies = [
 
 [[package]]
 name = "tycho-execution"
-version = "0.165.0"
+version = "0.165.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "89406dc3ce6e8b851ad8ca9794070e236cee4378d110a89470eda067a6056ded"
+checksum = "2e6a51bf94daa33f83a46b09881a03e0c06554df630af92e9956d21d3bcb863f"
 dependencies = [
  "alloy",
  "chrono",
@@ -7443,8 +7501,29 @@ dependencies = [
 ]
 
 [[package]]
+name = "tycho-execution"
+version = "0.171.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "427319952aa1fe7665669d20946b29fe5b5c210a4ab2cb534eda29e2ecf5a7cf"
+dependencies = [
+ "alloy",
+ "chrono",
+ "clap",
+ "dotenvy",
+ "hex",
+ "num-bigint",
+ "once_cell",
+ "reqwest",
+ "serde",
+ "serde_json",
+ "thiserror 1.0.69",
+ "tokio",
+ "tycho-common",
+]
+
+[[package]]
 name = "tycho-integration-test"
-version = "0.248.0"
+version = "0.255.0"
 dependencies = [
  "actix-web",
  "alloy",
@@ -7473,7 +7552,7 @@ dependencies = [
 
 [[package]]
 name = "tycho-simulation"
-version = "0.248.0"
+version = "0.255.0"
 dependencies = [
  "alloy",
  "alloy-chains",
@@ -7518,13 +7597,15 @@ dependencies = [
  "tokio-stream",
  "tokio-test",
  "tokio-tungstenite 0.28.0",
+ "toml",
  "tracing",
  "tracing-appender",
  "tracing-subscriber 0.3.20",
  "tycho-client",
  "tycho-common",
  "tycho-ethereum",
- "tycho-execution",
+ "tycho-execution 0.165.1",
+ "tycho-test",
  "typetag",
  "unicode-width 0.1.14",
  "uuid",
@@ -7532,7 +7613,7 @@ dependencies = [
 
 [[package]]
 name = "tycho-test"
-version = "0.248.0"
+version = "0.255.0"
 dependencies = [
  "alloy",
  "alloy-chains",
@@ -7543,7 +7624,7 @@ dependencies = [
  "futures 0.3.31",
  "hex",
  "itertools 0.10.5",
- "lru 0.16.1",
+ "lru 0.16.3",
  "miette",
  "num-bigint",
  "num-traits",
@@ -7558,7 +7639,7 @@ dependencies = [
  "tycho-client",
  "tycho-common",
  "tycho-ethereum",
- "tycho-execution",
+ "tycho-execution 0.171.2",
  "tycho-simulation",
  "urlencoding",
 ]
